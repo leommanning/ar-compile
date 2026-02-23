@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <title>MindAR Image Target Compiler · Mobile Optimized</title>
+    <!-- Professional fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f0f2f5;
+            min-height: 100vh;
+            min-height: -webkit-fill-available;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            color: #1e293b;
+        }
+
+        /* Main container - full height on mobile */
+        .corporate-card {
+            max-width: 1400px;
+            width: 100%;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: calc(100vh - 24px);
+            height: calc(100dvh - 24px);
+            max-height: 900px;
+        }
+
+        /* Fixed header - more compact on mobile */
+        .card-header {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .header-left h1 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1e293b;
+            letter-spacing: -0.01em;
+        }
+
+        .badge {
+            background: #f1f5f9;
+            color: #475569;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .header-stats {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .stat {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 0.75rem;
+            color: #64748b;
+            white-space: nowrap;
+        }
+
+        .stat i {
+            color: #4f46e5;
+            font-size: 0.8rem;
+        }
+
+        /* Custom upload area - touch friendly */
+        .upload-section {
+            padding: 10px 16px;
+            background: #fafbfc;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .custom-upload {
+            border: 1px dashed #cbd5e1;
+            border-radius: 10px;
+            background: white;
+            padding: 14px 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .custom-upload:active {
+            background: #f8fafc;
+            transform: scale(0.98);
+        }
+
+        .custom-upload i {
+            font-size: 1.4rem;
+            color: #4f46e5;
+            margin-bottom: 4px;
+        }
+
+        .custom-upload strong {
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .custom-upload .note {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        /* Control bar - mobile optimized */
+        .control-bar {
+            padding: 10px 16px;
+            background: white;
+            border-bottom: 1px solid #edf2f7;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+            flex: 1 1 auto;
+        }
+
+        .btn {
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.2s;
+            flex: 1 1 auto;
+            min-width: 90px;
+            touch-action: manipulation;
+        }
+
+        .btn:active {
+            transform: scale(0.96);
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: #4338ca;
+        }
+
+        .btn-secondary {
+            background: white;
+            border: 1px solid #e2e8f0;
+            color: #1e293b;
+        }
+
+        .btn-secondary:active {
+            background: #f8fafc;
+        }
+
+        .btn:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        .progress-container {
+            flex: 2;
+            min-width: 100px;
+            height: 6px;
+            background: #edf2f7;
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: #4f46e5;
+            border-radius: 3px;
+            transition: width 0.2s ease;
+        }
+
+        .file-count {
+            background: #f8fafc;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            border: 1px solid #edf2f7;
+        }
+
+        /* Main content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            overflow: hidden;
+            padding: 0 16px;
+        }
+
+        /* File section */
+        .file-section {
+            margin: 12px 0 8px 0;
+        }
+
+        .section-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.03em;
+            color: #64748b;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .file-list-horizontal {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 4px 0 10px 0;
+            min-height: 58px;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
+            scrollbar-width: thin;
+            scroll-padding: 0 16px;
+        }
+
+        .file-list-horizontal::-webkit-scrollbar {
+            height: 3px;
+        }
+
+        .file-list-horizontal::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        .file-list-horizontal::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 3px;
+        }
+
+        /* Touch-friendly file items */
+        .file-item-horizontal {
+            background: white;
+            border: 1px solid #edf2f7;
+            border-radius: 8px;
+            padding: 8px 12px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.8rem;
+            flex-shrink: 0;
+            border-left: 3px solid transparent;
+            min-height: 48px;
+            touch-action: manipulation;
+        }
+
+        .file-item-horizontal:active {
+            background: #f8fafc;
+            transform: scale(0.98);
+        }
+
+        .file-item-horizontal.active {
+            background: #eef2ff;
+            border-left-color: #4f46e5;
+            border-color: #4f46e5;
+        }
+
+        .file-name-text {
+            font-weight: 500;
+            color: #1e293b;
+            max-width: 130px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .file-status-badge {
+            font-size: 0.65rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #f1f5f9;
+            color: #475569;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .status-dot {
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background: #94a3b8;
+        }
+
+        .status-dot.compiled {
+            background: #10b981;
+        }
+
+        .file-remove-icon {
+            color: #94a3b8;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            font-size: 0.7rem;
+            margin-left: 2px;
+            border-radius: 6px;
+            touch-action: manipulation;
+        }
+
+        .file-remove-icon:active {
+            background: #fee2e2;
+            color: #ef4444;
+        }
+
+        /* Preview section */
+        .preview-section {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-height: 0;
+            margin-top: 4px;
+        }
+
+        .preview-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            min-height: 44px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .selected-info {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .selected-info h3 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 2px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .selected-info p {
+            font-size: 0.7rem;
+            color: #64748b;
+        }
+
+        .btn-download {
+            background: #4f46e5;
+            color: white;
+            padding: 10px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            white-space: nowrap;
+            touch-action: manipulation;
+            min-height: 44px;
+        }
+
+        .btn-download:active {
+            background: #4338ca;
+            transform: scale(0.96);
+        }
+
+        /* Horizontal scroll for scales - mobile optimized */
+        .scales-container {
+            flex: 1;
+            overflow-x: auto;
+            overflow-y: hidden;
+            padding: 8px 0 12px 0;
+            background: #fafbfc;
+            border-radius: 10px;
+            -webkit-overflow-scrolling: touch;
+            scroll-padding: 0 16px;
+        }
+
+        .scales-horizontal {
+            display: inline-flex;
+            gap: 12px;
+            height: 100%;
+            padding: 0 4px;
+        }
+
+        .scale-card {
+            width: 140px;
+            background: white;
+            border: 1px solid #edf2f7;
+            border-radius: 10px;
+            padding: 10px;
+            display: inline-block;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            touch-action: manipulation;
+        }
+
+        .scale-card:active {
+            transform: scale(0.98);
+            border-color: #4f46e5;
+        }
+
+        .scale-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: #64748b;
+            margin-bottom: 6px;
+            padding-bottom: 4px;
+            border-bottom: 1px solid #edf2f7;
+        }
+
+        .scale-preview {
+            aspect-ratio: 1;
+            background: #f8fafc;
+            border: 1px solid #edf2f7;
+            border-radius: 6px;
+            overflow: hidden;
+            margin-bottom: 6px;
+        }
+
+        .scale-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .scale-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.65rem;
+        }
+
+        .scale-factor {
+            color: #64748b;
+        }
+
+        .feature-count {
+            background: #4f46e5;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        /* Empty state */
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #94a3b8;
+            padding: 20px;
+        }
+
+        .empty-state i {
+            font-size: 2.5rem;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        .empty-state p {
+            font-size: 0.85rem;
+            text-align: center;
+        }
+
+        /* Footer */
+        .card-footer {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #edf2f7;
+            display: flex;
+            justify-content: center;
+        }
+
+        .btn-download-single {
+            background: #4f46e5;
+            color: white;
+            padding: 14px 24px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 1rem;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            width: 100%;
+            max-width: 400px;
+            touch-action: manipulation;
+            min-height: 52px;
+        }
+
+        .btn-download-single:active {
+            background: #4338ca;
+            transform: scale(0.98);
+        }
+
+        .btn-download-single:disabled {
+            opacity: 0.4;
+            pointer-events: none;
+        }
+
+        /* Toast - mobile friendly */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #1e293b;
+            color: white;
+            padding: 14px 20px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            transform: translateY(150%);
+            opacity: 0;
+            transition: all 0.3s ease;
+            z-index: 1000;
+            text-align: center;
+            max-width: 400px;
+            margin: 0 auto;
+            pointer-events: none;
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        /* Mobile landscape optimizations */
+        @media (max-width: 640px) and (orientation: landscape) {
+            .corporate-card {
+                height: calc(100vh - 20px);
+            }
+            
+            .scale-card {
+                width: 120px;
+            }
+            
+            .btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            
+            .custom-upload {
+                min-height: 70px;
+                padding: 8px;
+            }
+        }
+
+        /* Small phones */
+        @media (max-width: 380px) {
+            .header-left h1 {
+                font-size: 1rem;
+            }
+            
+            .file-name-text {
+                max-width: 90px;
+            }
+            
+            .scale-card {
+                width: 120px;
+            }
+        }
+
+        /* Prevent text scaling on orientation change */
+        html {
+            -webkit-text-size-adjust: 100%;
+        }
+    </style>
+</head>
+<body>
+    <div class="corporate-card">
+        <!-- Header -->
+        <div class="card-header">
+            <div class="header-left">
+                <h1>MindAR Compiler</h1>
+                <span class="badge">Mobile v2.5</span>
+            </div>
+            <div class="header-stats">
+                <div class="stat">
+                    <i class="fas fa-layer-group"></i>
+                    <span>14</span>
+                </div>
+                <div class="stat">
+                    <i class="fas fa-arrows-alt-h"></i>
+                    <span>Scroll</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Upload Area -->
+        <div class="upload-section">
+            <div id="customUpload" class="custom-upload">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <strong>Tap to select images</strong>
+                <span class="note">JPG, PNG · Max 50 files</span>
+                <input type="file" id="fileInput" multiple accept="image/jpeg,image/png,image/jpg,image/webp">
+            </div>
+        </div>
+
+        <!-- Control bar -->
+        <div class="control-bar">
+            <div class="btn-group">
+                <button id="startBtn" class="btn btn-primary" disabled>
+                    <i class="fas fa-play"></i> Compile
+                </button>
+                <button id="clearBtn" class="btn btn-secondary">
+                    <i class="fas fa-trash-alt"></i> Clear
+                </button>
+            </div>
+            <div class="progress-container">
+                <div id="progressBar" class="progress-bar" style="width:0%"></div>
+            </div>
+            <div class="file-count" id="fileStats">
+                <i class="far fa-images"></i> <span id="fileCount">0</span>
+            </div>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <!-- Horizontal file list -->
+            <div class="file-section">
+                <div class="section-label">
+                    <span><i class="far fa-list-alt"></i> IMAGES · SCROLL →</span>
+                    <span id="totalFeaturesPanel">0</span>
+                </div>
+                <div id="fileListHorizontal" class="file-list-horizontal"></div>
+            </div>
+
+            <!-- Preview section -->
+            <div class="preview-section">
+                <div class="preview-header">
+                    <div class="selected-info" id="selectedInfo" style="display: none;">
+                        <h3 id="selectedName">Select image</h3>
+                        <p id="selectedMeta">-</p>
+                    </div>
+                    <button id="downloadCurrentBtn" class="btn-download" style="display: none;">
+                        <i class="fas fa-download"></i> Get .mind
+                    </button>
+                </div>
+
+                <div class="scales-container" id="scalesContainer">
+                    <div class="empty-state">
+                        <i class="fas fa-cube"></i>
+                        <p>Tap an image to view 14 scales</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer - Single .mind download -->
+        <div class="card-footer">
+            <button id="downloadSingleBtn" class="btn-download-single" disabled>
+                <i class="fas fa-download"></i> Download Combined .mind File
+            </button>
+        </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+
+    <script>
+        (function() {
+            // Mobile-optimized config
+            const CONFIG = {
+                MAX_IMAGES: 50,
+                MAX_DIM: 600, // Smaller for mobile performance
+                FAST_THRESHOLD: 30,
+                MAX_FEATURES: 200, // Reduced for mobile
+                MIN_DISTANCE: 6,
+                SCALE_FACTORS: [1.0, 0.7, 0.5, 0.4, 0.3, 0.25, 0.2, 0.15, 0.12, 0.1, 0.08, 0.06, 0.04, 0.03]
+            };
+
+            // DOM elements
+            const elements = {
+                startBtn: document.getElementById('startBtn'),
+                clearBtn: document.getElementById('clearBtn'),
+                downloadSingleBtn: document.getElementById('downloadSingleBtn'),
+                downloadCurrentBtn: document.getElementById('downloadCurrentBtn'),
+                progressBar: document.getElementById('progressBar'),
+                fileCount: document.getElementById('fileCount'),
+                fileStats: document.getElementById('fileStats'),
+                fileListHorizontal: document.getElementById('fileListHorizontal'),
+                scalesContainer: document.getElementById('scalesContainer'),
+                selectedInfo: document.getElementById('selectedInfo'),
+                selectedName: document.getElementById('selectedName'),
+                selectedMeta: document.getElementById('selectedMeta'),
+                totalFeaturesPanel: document.getElementById('totalFeaturesPanel'),
+                toast: document.getElementById('toast'),
+                customUpload: document.getElementById('customUpload'),
+                fileInput: document.getElementById('fileInput')
+            };
+
+            // State
+            let state = {
+                imageFiles: [],
+                compiledImages: [],
+                currentIndex: -1,
+                totalFeatures: 0
+            };
+
+            // Toast
+            function showToast(msg) {
+                elements.toast.textContent = msg;
+                elements.toast.classList.add('show');
+                setTimeout(() => elements.toast.classList.remove('show'), 2000);
+            }
+
+            // Custom file upload handler
+            elements.customUpload.addEventListener('click', () => {
+                elements.fileInput.click();
+            });
+
+            elements.fileInput.addEventListener('change', (e) => {
+                const files = Array.from(e.target.files);
+                
+                files.forEach(file => {
+                    if (!state.imageFiles.some(f => f.name === file.name && f.size === file.size)) {
+                        if (state.imageFiles.length < CONFIG.MAX_IMAGES) {
+                            state.imageFiles.push(file);
+                        }
+                    }
+                });
+                
+                updateFileList();
+                elements.startBtn.disabled = state.imageFiles.length === 0;
+                elements.fileCount.textContent = state.imageFiles.length;
+                elements.fileInput.value = '';
+                
+                // Show feedback
+                if (files.length > 0) {
+                    showToast(`Added ${files.length} image(s)`);
+                }
+            });
+
+            // FAST detection (optimized for mobile)
+            function detectFAST(imageData) {
+                const width = imageData.width;
+                const height = imageData.height;
+                const data = imageData.data;
+                
+                const gray = new Uint8Array(width * height);
+                for (let i = 0; i < width * height; i++) {
+                    const r = data[i*4];
+                    const g = data[i*4 + 1];
+                    const b = data[i*4 + 2];
+                    gray[i] = (r * 77 + g * 150 + b * 29) >> 8;
+                }
+                
+                const corners = [];
+                const offsets = [
+                    [-3,0], [-3,1], [-2,2], [-1,3], [0,3], [1,3], [2,2], [3,1],
+                    [3,0], [3,-1], [2,-2], [1,-3], [0,-3], [-1,-3], [-2,-2], [-3,-1]
+                ];
+                
+                for (let y = 3; y < height - 3; y += 2) {
+                    for (let x = 3; x < width - 3; x += 2) {
+                        const center = gray[y * width + x];
+                        let brighter = 0, darker = 0;
+                        
+                        for (let i = 0; i < 16; i += 4) {
+                            const nx = x + offsets[i][0];
+                            const ny = y + offsets[i][1];
+                            const pixel = gray[ny * width + nx];
+                            if (pixel >= center + CONFIG.FAST_THRESHOLD) brighter += 4;
+                            if (pixel <= center - CONFIG.FAST_THRESHOLD) darker += 4;
+                        }
+                        
+                        if (brighter >= 8 || darker >= 8) {
+                            brighter = 0; darker = 0;
+                            for (let i = 0; i < 16; i++) {
+                                const nx = x + offsets[i][0];
+                                const ny = y + offsets[i][1];
+                                const pixel = gray[ny * width + nx];
+                                if (pixel >= center + CONFIG.FAST_THRESHOLD) brighter++;
+                                if (pixel <= center - CONFIG.FAST_THRESHOLD) darker++;
+                            }
+                            if (brighter >= 12 || darker >= 12) {
+                                corners.push({
+                                    x, y,
+                                    score: Math.abs(center - gray[(y-1)*width + x])
+                                });
+                            }
+                        }
+                    }
+                }
+                
+                corners.sort((a, b) => b.score - a.score);
+                const selected = [];
+                const grid = new Map();
+                
+                for (const corner of corners) {
+                    if (selected.length >= CONFIG.MAX_FEATURES) break;
+                    const cellX = Math.floor(corner.x / CONFIG.MIN_DISTANCE);
+                    const cellY = Math.floor(corner.y / CONFIG.MIN_DISTANCE);
+                    const key = `${cellX},${cellY}`;
+                    if (!grid.has(key)) {
+                        grid.set(key, true);
+                        selected.push(corner);
+                    }
+                }
+                
+                return selected;
+            }
+
+            // Generate pyramid for single image
+            function generatePyramid(image, width, height) {
+                const pyramids = [];
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d', { willReadFrequently: true });
+                
+                for (let i = 0; i < 14; i++) {
+                    const scale = CONFIG.SCALE_FACTORS[i];
+                    const newWidth = Math.max(24, Math.floor(width * scale));
+                    const newHeight = Math.max(24, Math.floor(height * scale));
+                    
+                    canvas.width = newWidth;
+                    canvas.height = newHeight;
+                    ctx.drawImage(image, 0, 0, newWidth, newHeight);
+                    
+                    const imageData = ctx.getImageData(0, 0, newWidth, newHeight);
+                    const features = detectFAST(imageData);
+                    
+                    const preview = document.createElement('canvas');
+                    preview.width = newWidth;
+                    preview.height = newHeight;
+                    const pCtx = preview.getContext('2d');
+                    pCtx.drawImage(canvas, 0, 0);
+                    
+                    pCtx.fillStyle = '#4f46e5';
+                    features.forEach(f => {
+                        pCtx.beginPath();
+                        pCtx.arc(f.x, f.y, 1.5, 0, 2 * Math.PI);
+                        pCtx.fill();
+                    });
+                    
+                    pyramids.push({
+                        scale,
+                        width: newWidth,
+                        height: newHeight,
+                        preview: preview.toDataURL(),
+                        features,
+                        count: features.length
+                    });
+                }
+                
+                return pyramids;
+            }
+
+            // Generate combined .mind file
+            function generateCombinedMindFile(compiledImages) {
+                let totalFeatures = 0;
+                compiledImages.forEach(img => {
+                    img.pyramids.forEach(p => totalFeatures += p.count);
+                });
+                
+                const encoder = new TextEncoder();
+                
+                let bufferSize = 10;
+                compiledImages.forEach(img => {
+                    bufferSize += 1 + img.file.name.length;
+                    img.pyramids.forEach(p => {
+                        bufferSize += p.count * 6;
+                    });
+                });
+                
+                const buffer = new ArrayBuffer(bufferSize);
+                const view = new DataView(buffer);
+                const uint8View = new Uint8Array(buffer);
+                
+                encoder.encodeInto("MINDT", uint8View.subarray(0, 5));
+                view.setUint8(5, 3);
+                view.setUint16(6, compiledImages.length, true);
+                view.setUint16(8, totalFeatures, true);
+                
+                let offset = 10;
+                
+                compiledImages.forEach(img => {
+                    const nameBytes = encoder.encode(img.file.name);
+                    view.setUint8(offset, nameBytes.length);
+                    offset += 1;
+                    uint8View.set(nameBytes, offset);
+                    offset += nameBytes.length;
+                    
+                    img.pyramids.forEach((p, scaleIdx) => {
+                        p.features.forEach(f => {
+                            view.setUint16(offset, f.x, true);
+                            view.setUint16(offset + 2, f.y, true);
+                            view.setUint8(offset + 4, scaleIdx);
+                            view.setUint8(offset + 5, Math.min(255, f.score));
+                            offset += 6;
+                        });
+                    });
+                });
+                
+                return buffer;
+            }
+
+            // Compile single image
+            async function compileImage(file, index) {
+                return new Promise((resolve, reject) => {
+                    const img = new Image();
+                    const url = URL.createObjectURL(file);
+                    
+                    img.onload = () => {
+                        try {
+                            let width = img.width, height = img.height;
+                            
+                            if (width > CONFIG.MAX_DIM || height > CONFIG.MAX_DIM) {
+                                const canvas = document.createElement('canvas');
+                                if (width > height) {
+                                    canvas.width = CONFIG.MAX_DIM;
+                                    canvas.height = Math.floor(height * (CONFIG.MAX_DIM / width));
+                                } else {
+                                    canvas.height = CONFIG.MAX_DIM;
+                                    canvas.width = Math.floor(width * (CONFIG.MAX_DIM / height));
+                                }
+                                
+                                const ctx = canvas.getContext('2d');
+                                ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+                                
+                                const resized = new Image();
+                                resized.onload = () => {
+                                    const pyramids = generatePyramid(resized, canvas.width, canvas.height);
+                                    
+                                    state.compiledImages[index] = {
+                                        file,
+                                        pyramids,
+                                        fileName: file.name
+                                    };
+                                    URL.revokeObjectURL(url);
+                                    resolve();
+                                };
+                                resized.src = canvas.toDataURL('image/jpeg', 0.8);
+                            } else {
+                                const pyramids = generatePyramid(img, width, height);
+                                
+                                state.compiledImages[index] = {
+                                    file,
+                                    pyramids,
+                                    fileName: file.name
+                                };
+                                URL.revokeObjectURL(url);
+                                resolve();
+                            }
+                        } catch (err) {
+                            URL.revokeObjectURL(url);
+                            reject(err);
+                        }
+                    };
+                    
+                    img.onerror = () => {
+                        URL.revokeObjectURL(url);
+                        reject(new Error('Failed to load image'));
+                    };
+                    
+                    img.src = url;
+                });
+            }
+
+            // Compile all with mobile-friendly batching
+            async function compileAll() {
+                elements.startBtn.disabled = true;
+                state.compiledImages = new Array(state.imageFiles.length);
+                
+                showToast(`Compiling ${state.imageFiles.length} images...`);
+                
+                for (let i = 0; i < state.imageFiles.length; i += 2) { // Smaller batches for mobile
+                    const batch = state.imageFiles.slice(i, i + 2);
+                    await Promise.all(batch.map((f, idx) => compileImage(f, i + idx)));
+                    
+                    const progress = ((i + 2) / state.imageFiles.length) * 100;
+                    elements.progressBar.style.width = `${Math.min(100, progress)}%`;
+                    
+                    updateFileList();
+                    
+                    // Allow UI to update
+                    await new Promise(r => setTimeout(r, 10));
+                }
+                
+                elements.progressBar.style.width = '100%';
+                elements.downloadSingleBtn.disabled = false;
+                showToast(`Compiled ${state.imageFiles.length} images`);
+            }
+
+            // Update file list
+            function updateFileList() {
+                let html = '';
+                let totalFeatures = 0;
+                
+                state.imageFiles.forEach((file, idx) => {
+                    const compiled = state.compiledImages[idx];
+                    const features = compiled ? compiled.pyramids.reduce((s, p) => s + p.count, 0) : 0;
+                    totalFeatures += features;
+                    
+                    const isActive = idx === state.currentIndex ? 'active' : '';
+                    const statusClass = compiled ? 'compiled' : '';
+                    
+                    html += `
+                        <div class="file-item-horizontal ${isActive}" data-index="${idx}">
+                            <span class="file-name-text" title="${file.name}">${file.name}</span>
+                            <span class="file-status-badge">
+                                <span class="status-dot ${statusClass}"></span>
+                                ${compiled ? features : ''}
+                            </span>
+                            <button class="file-remove-icon" data-index="${idx}">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                    `;
+                });
+                
+                elements.fileListHorizontal.innerHTML = html;
+                elements.fileCount.textContent = state.imageFiles.length;
+                elements.totalFeaturesPanel.textContent = `${totalFeatures} feat`;
+                state.totalFeatures = totalFeatures;
+                
+                // Add touch-friendly handlers
+                document.querySelectorAll('.file-item-horizontal').forEach(el => {
+                    el.addEventListener('click', (e) => {
+                        if (!e.target.closest('.file-remove-icon')) {
+                            const idx = parseInt(el.dataset.index);
+                            selectImage(idx);
+                        }
+                    });
+                });
+                
+                document.querySelectorAll('.file-remove-icon').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const idx = parseInt(btn.dataset.index);
+                        removeFile(idx);
+                    });
+                });
+            }
+
+            // Select image
+            function selectImage(index) {
+                state.currentIndex = index;
+                const img = state.compiledImages[index];
+                
+                if (img) {
+                    elements.selectedInfo.style.display = 'flex';
+                    elements.downloadCurrentBtn.style.display = 'flex';
+                    elements.selectedName.textContent = img.file.name.length > 25 ? 
+                        img.file.name.substring(0, 22) + '...' : img.file.name;
+                    elements.selectedMeta.textContent = `${img.pyramids[0].width}×${img.pyramids[0].height} · ${img.pyramids.reduce((s, p) => s + p.count, 0)} feat`;
+                    
+                    let scalesHtml = '<div class="scales-horizontal">';
+                    img.pyramids.forEach((p, i) => {
+                        scalesHtml += `
+                            <div class="scale-card">
+                                <div class="scale-header">
+                                    <span>S${i+1}</span>
+                                    <span>${p.width}×${p.height}</span>
+                                </div>
+                                <div class="scale-preview">
+                                    <img src="${p.preview}" alt="scale" loading="lazy">
+                                </div>
+                                <div class="scale-footer">
+                                    <span class="scale-factor">${p.scale.toFixed(2)}x</span>
+                                    <span class="feature-count">${p.count}</span>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    scalesHtml += '</div>';
+                    elements.scalesContainer.innerHTML = scalesHtml;
+                }
+                
+                updateFileList();
+            }
+
+            // Remove file
+            function removeFile(index) {
+                state.imageFiles.splice(index, 1);
+                state.compiledImages.splice(index, 1);
+                if (state.currentIndex === index) {
+                    state.currentIndex = -1;
+                    elements.selectedInfo.style.display = 'none';
+                    elements.downloadCurrentBtn.style.display = 'none';
+                    elements.scalesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-cube"></i><p>Tap an image to view 14 scales</p></div>';
+                } else if (state.currentIndex > index) {
+                    state.currentIndex--;
+                }
+                updateFileList();
+                elements.startBtn.disabled = state.imageFiles.length === 0;
+                elements.downloadSingleBtn.disabled = state.compiledImages.filter(Boolean).length === 0;
+                showToast('Image removed');
+            }
+
+            // Download current
+            function downloadCurrent() {
+                const img = state.compiledImages[state.currentIndex];
+                if (!img) return;
+                
+                const singleImageArray = [img];
+                const mindBuffer = generateCombinedMindFile(singleImageArray);
+                const blob = new Blob([mindBuffer], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = img.file.name.replace(/\.[^/.]+$/, '') + '.mind';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast(`Downloaded ${img.file.name}`);
+            }
+
+            // Download combined
+            function downloadCombined() {
+                if (!state.compiledImages.length) return;
+                
+                const mindBuffer = generateCombinedMindFile(state.compiledImages);
+                const blob = new Blob([mindBuffer], { type: 'application/octet-stream' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'targets.mind';
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast('Downloaded combined .mind file');
+            }
+
+            // Event listeners
+            elements.startBtn.addEventListener('click', compileAll);
+            elements.clearBtn.addEventListener('click', () => {
+                state.imageFiles = [];
+                state.compiledImages = [];
+                state.currentIndex = -1;
+                updateFileList();
+                elements.selectedInfo.style.display = 'none';
+                elements.downloadCurrentBtn.style.display = 'none';
+                elements.scalesContainer.innerHTML = '<div class="empty-state"><i class="fas fa-cube"></i><p>Tap an image to view 14 scales</p></div>';
+                elements.progressBar.style.width = '0%';
+                elements.downloadSingleBtn.disabled = true;
+                elements.startBtn.disabled = true;
+                elements.fileCount.textContent = '0';
+                showToast('Cleared all');
+            });
+            elements.downloadCurrentBtn.addEventListener('click', downloadCurrent);
+            elements.downloadSingleBtn.addEventListener('click', downloadCombined);
+        })();
+    </script>
+</body>
+</html>
